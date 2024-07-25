@@ -1,0 +1,6 @@
+*.elf
+*.exe
+*.bin
+*.d
+*.o
+.build
