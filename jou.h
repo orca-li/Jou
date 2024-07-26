@@ -1,7 +1,15 @@
 #if !defined(JOU_H)
 #define JOU_H
 
+#include "jouCONFIG.h"
+
+#include <stddef.h>
+
 typedef void (*method)(char *fmt, ...);
+
+struct JOU_CONFIG {
+
+};
 
 struct JOU_BODY {
     struct {
@@ -9,7 +17,11 @@ struct JOU_BODY {
         const method wrn;
         const method dbg;
         const method inf;
+        const method print;
+        void (*put)(char);
+        void (*xxd)(char*, size_t len);
     };
+    struct JOU_CONFIG config;
 };
 
 extern struct JOU_BODY jou;

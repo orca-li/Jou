@@ -58,7 +58,7 @@ mkdir:
 	@mkdir -p ${DBGDIR}
 
 run:
-	./$(SHORTBIN_PATH)
+	./$(BIN_PATH)
 
 clean:
 	@rm -rf ${BUILD_DIR}
