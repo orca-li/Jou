@@ -1,40 +1,50 @@
 #if !defined(JOU_H)
 #define JOU_H
 
-#include "jouCONFIG.h"
-
 #include <stddef.h>
 
-typedef void (*method)(char *fmt, ...);
+#include "include/jouERR.h"
+
+/** @typedef for functions
+ * 
+ * @details
+ * j%f%%_t - jou type
+ * %1 - return type
+ * %2 - type ((f)unction, (p)ointer)
+ * %3-%n - params
+ * (a)rgs, (c)har, (s)tring, (l)ong {unsigned long, size_t}
+ * 
+ */
+typedef void (*vfv_jt)(void);
+typedef void (*vfc_jt)(char);
+typedef void (*vfsa_jt)(char *, ...);
+typedef void (*vfsla_jt)(char *, size_t, ...);
 
 struct JOU_CONFIG {
-
+    const vfv_jt reset;
 };
 
-struct JOU_BODY {
+typedef struct JOU_JT {
     struct {
-        const method err;
-        const method wrn;
-        const method dbg;
-        const method inf;
-        const method print;
-        void (*put)(char);
-        void (*xxd)(char*, size_t len);
+        /* stdio */
+        const vfsa_jt print;
+        const vfc_jt put;
+
+        /* logs */
+        const vfsa_jt err;
+        const vfsa_jt wrn;
+        const vfsa_jt dbg;
+        const vfsa_jt inf;
+        
+        /* dumps */
+        const vfsla_jt hex;
+        const vfsla_jt bin;
     };
     struct JOU_CONFIG config;
-};
+} jou_jt;
 
-extern struct JOU_BODY jou;
+extern jou_jt jou;
 
-#define JOU_LEVEL_ERROR "Error"
-#define JOU_LEVEL_WARNING "Warning"
-#define JOU_LEVEL_DEBUG "Debug"
-#define JOU_LEVEL_INFO "Info"
 
-#define JOU_COLOR_RED "\e[0;31m"
-#define JOU_COLOR_GREEN "\e[0;32m"
-#define JOU_COLOR_YELLOW "\e[0;33m"
-#define JOU_COLOR_BLUE "\e[0;34m"
-#define JOU_COLOR_RESET "\e[0;0m"
 
 #endif /* JOU_H */

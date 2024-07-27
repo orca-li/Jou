@@ -1,5 +1,7 @@
 #include <jou.h>
 
+#include <string.h>
+
 int main(void) 
 {
     jou.err("hello world!");
@@ -8,7 +10,10 @@ int main(void)
     jou.dbg("w");
     jou.put('O');
     jou.print("rcali\n");
-    jou.xxd("hex", 13);
+
+    char arr[] = "\0hello world, hi jou, hi orcali and hi hexdump!!";
+    jou.hex(arr, 64);
+    
 
     return 0;
 }

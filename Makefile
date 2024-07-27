@@ -9,7 +9,8 @@ BINDIR := ${BUILD_DIR}/binary
 
 # --- TOOLCHAIN VARIABLES CODE BEGIN ------------------------
 ## compiler tools
-PREFIXCC :=
+# PREFIXCC := mingw32-
+PREFIXCC := 
 CC := $(PREFIXCC)gcc
 OCOPY := $(PREFIXCC)objcopy
 ODUMP := $(PREFIXCC)objdump
@@ -19,12 +20,14 @@ CSIZE := $(PREFIXCC)size
 ### flags for CC
 # CFLAGS = -O0
 # CFLAGS = -ggdb
-CFLAGS += -Wall
-CFLAGS += -Werror
-CFLAGS += -Wextra
+# CFLAGS += -Wall
+# CFLAGS += -Werror
+# CFLAGS += -Wextra
 # --- TOOLCHAIN VARIABLES CODE END --------------------------
 
 # --- PATHS AND SYMBOLS CODE BEGIN --------------------------
+include about/quickStart.mk
+include source/jou.mk
 
 INCLUDES := -I"../jou"
 
@@ -47,10 +50,12 @@ getobj:
 getbin:
 	$(CC) $(CFLAGS) $(OBJDIR)/*.o -o $(BIN_PATH)
 	$(OCOPY) -O binary $(SHORTBIN_PATH).bin
-	$(OCOPY) -O ihex $(SHORTBIN_PATH).hex
+#     $(OCOPY) -O ihex $(SHORTBIN_PATH).hex
 
 getsymb:
-	$(ODUMP) -h -S $(BIN_PATH) > $(SHORTDBG_PATH).list
+
+# getsymb:
+# 	$(ODUMP) -h -S $(BIN_PATH) > $(SHORTDBG_PATH).list
 
 mkdir:
 	@mkdir -p ${OBJDIR}

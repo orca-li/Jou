@@ -1,4 +1,5 @@
 #include <jou.h>
+#include "include/jouFMT.h"
 
 #include <stdio.h>
 #include <stdint.h>
@@ -11,23 +12,31 @@ static void jouLevelError(char *fmt, ...);
 static void jouLevelWarning(char *fmt, ...);
 static void jouPrint(char *fmt, ...);
 static void jouPut(char c);
-static void jouHexDump(char *buf, size_t len);
+static void jouHexDump(char *buf, size_t len, ...);
 
-struct JOU_BODY jou = {
+jou_jt jou = {
+    /* stdio */
+    .print = jouPrint,
+    .put = jouPut,
+
+    /* logs */
     .err = jouLevelError,
     .dbg = jouLevelDebug,
     .inf = jouLevelInfo,
     .wrn = jouLevelWarning,
-    .print = jouPrint,
-    .put = jouPut,
-    .xxd = jouHexDump,
+
+    /* dump */
+    .hex = jouHexDump,
 };
 
 /* --- METHODS -------------------------------------------------- */
 
-static void jouHexDump(char *buf, size_t len)
+static void jouHexDump(char *buf, size_t len, ...)
 {
-    printf("len %ld, %s", len, buf);
+    va_list args;
+    va_start(args, len);
+    __PRIVATEjouHexDump(buf, len, &args);
+    va_end(args);
 }
 
 static void jouPut(char c)
