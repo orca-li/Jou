@@ -1,10 +1,11 @@
 #include <jou.h>
-#include "include/jouFMT.h"
+#include "include/jouTEMP.h"
 
 #include <stdio.h>
 #include <stdint.h>
 #include <stdarg.h>
 #include <stddef.h>
+#include <string.h>
 
 static void jouLevelInfo(char *fmt, ...);
 static void jouLevelDebug(char *fmt, ...);
@@ -12,12 +13,17 @@ static void jouLevelError(char *fmt, ...);
 static void jouLevelWarning(char *fmt, ...);
 static void jouPrint(char *fmt, ...);
 static void jouPut(char c);
-static void jouHexDump(char *buf, size_t len, ...);
+static void jouHexDump(char *buf, size_t len);
+static void jouMergeLines(char *buf, char *add, ...);
+static void jouScan(char *fmt, ...);
+static int jouGetChar(void);
 
-jou_jt jou = {
+jou_jt chj0 = {
     /* stdio */
     .print = jouPrint,
-    .put = jouPut,
+    .putc = jouPut,
+    .scan = jouScan,
+    .getc = jouGetChar,
 
     /* logs */
     .err = jouLevelError,
@@ -27,28 +33,51 @@ jou_jt jou = {
 
     /* dump */
     .hex = jouHexDump,
+    .merge = jouMergeLines,
 };
 
 /* --- METHODS -------------------------------------------------- */
 
-static void jouHexDump(char *buf, size_t len, ...)
+static int jouGetChar(void)
+{
+    return JCONFIG_TUNNEL_GETC();
+}
+
+static void jouScan(char *fmt, ...)
+{
+    char scanj_buf[JCONFIG_SCANJ_BUF_SIZE];
+    
+    JCONFIG_TUNNEL_SCAN(scanj_buf);
+    
+    va_list args;
+    va_start(args, fmt);
+    vsscanf(scanj_buf, fmt, args);
+    va_end(args);
+}
+
+static void jouMergeLines(char *buf, char *add, ...)
 {
     va_list args;
-    va_start(args, len);
-    __PRIVATEjouHexDump(buf, len, &args);
+    va_start(args, add);
+
     va_end(args);
+}
+
+static void jouHexDump(char *buf, size_t len)
+{
+    __PRIVATEjouHexDump(buf, len);
 }
 
 static void jouPut(char c)
 {
-    putchar(c);
+    JCONFIG_TUNNEL_PUTC(c);
 }
 
 static void jouPrint(char *fmt, ...)
 {
     va_list args;
     va_start(args, fmt);
-    printf(fmt, args);
+    printj(fmt, &args);
     va_end(args);
 }
 

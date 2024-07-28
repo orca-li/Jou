@@ -1,20 +1,20 @@
 #include "jouCONFIG.h"
-#include "include/jouFMT.h"
+#include "include/jouTEMP.h"
 
 #include <stdio.h>
 #include <stdint.h>
 #include <ctype.h>
 #include <wchar.h>
 
-#define isjouhex(c) (isgraph(c) || c == ' ')
-
-static void printHexLine();
-
-
 #if defined(JCONFIG_COLORS)
-void __PRIVATEjouHexDump(char *buf, size_t len, va_list *args)
+void __PRIVATEjouHexDump(char *buf, size_t len)
 {
+#if JCONFIG_ADDRESS_COLUMN == 1
+    size_t line = (size_t)buf;
+#else
     size_t line = 0;
+#endif
+
     size_t i = 0;
     size_t itemp;
 
@@ -23,13 +23,9 @@ void __PRIVATEjouHexDump(char *buf, size_t len, va_list *args)
 
     while (i < len) {
         printf(JOU_COLOR_YELLOW);
-#if JCONFIG_WIDE_DUMP == 1
-        printf("%08X", line);
-#else
-        printf("%04X", line);
-#endif
+        printf("%08x", line);
         printf(JOU_COLOR_RESET);
-        printf(": ");
+        printf(":  ");
 
         itemp = i;
         printf(JOU_COLOR_RESET);
@@ -38,7 +34,7 @@ void __PRIVATEjouHexDump(char *buf, size_t len, va_list *args)
                 if (itemp >= len) {
                     printf("  ");
                 } else {
-                    if (isjouhex(*pHEX)) {
+                    if (isjoudump(*pHEX)) {
                         printf(JOU_COLOR_YELLOW);
                     }
                     char temp = *pHEX;
@@ -50,10 +46,11 @@ void __PRIVATEjouHexDump(char *buf, size_t len, va_list *args)
             putchar(' ');
         }
 
+        putchar(' ');
         itemp = i;
         for (size_t j = 0; j < JCONFIG_HEXDUMP_BYTES_IN_LINE; j++) {
             if (itemp < len) {
-                if (isjouhex(*pASCII)) {
+                if (isjoudump(*pASCII)) {
                     printf(JOU_COLOR_YELLOW);
                     putchar(*pASCII);
                     printf(JOU_COLOR_RESET);
@@ -68,7 +65,11 @@ void __PRIVATEjouHexDump(char *buf, size_t len, va_list *args)
         if (i >= len) return;
         putchar('\n');
         i = itemp;
+#if JCONFIG_ADDRESS_COLUMN == 1
+        line -= JCONFIG_HEXDUMP_BYTES_IN_LINE;
+#else
         line += JCONFIG_HEXDUMP_BYTES_IN_LINE;
+#endif
     }
 }
 #else

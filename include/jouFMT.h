@@ -15,6 +15,6 @@
 #define JOU_COLOR_BLUE "\e[0;34m"
 #define JOU_COLOR_RESET "\e[0;0m"
 
-void __PRIVATEjouHexDump(char *buf, size_t len, va_list *args);
+void __PRIVATEjouHexDump(char *buf, size_t len);
 
 #endif /* JOUFMT_H */

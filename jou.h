@@ -5,6 +5,9 @@
 
 #include "include/jouERR.h"
 
+/* Preprocessor directives JOU_CONFIG */
+#define JPD_HEX_ADDRESS (1 << 0)
+
 /** @typedef for functions
  * 
  * @details
@@ -17,18 +20,23 @@
  */
 typedef void (*vfv_jt)(void);
 typedef void (*vfc_jt)(char);
-typedef void (*vfsa_jt)(char *, ...);
-typedef void (*vfsla_jt)(char *, size_t, ...);
+typedef void (*vfsa_jt)(char*, ...);
+typedef void (*vfsl_jt)(char*, size_t);
+typedef void (*vfssa_jt)(char*, char*, ...);
+typedef int (*ifv_jt)(void);
+typedef unsigned char reg8_jt;
 
 struct JOU_CONFIG {
     const vfv_jt reset;
 };
 
 typedef struct JOU_JT {
-    struct {
+    struct { 
         /* stdio */
         const vfsa_jt print;
-        const vfc_jt put;
+        const vfc_jt putc;
+        const vfsa_jt scan;
+        const ifv_jt getc;
 
         /* logs */
         const vfsa_jt err;
@@ -37,14 +45,17 @@ typedef struct JOU_JT {
         const vfsa_jt inf;
         
         /* dumps */
-        const vfsla_jt hex;
-        const vfsla_jt bin;
+        const vfsl_jt hex;
+        const vfsl_jt bin;
+    };
+
+    /* tools */
+    struct {
+        const vfssa_jt merge;
     };
     struct JOU_CONFIG config;
 } jou_jt;
 
-extern jou_jt jou;
-
-
+extern jou_jt chj0;
 
 #endif /* JOU_H */

@@ -62,6 +62,9 @@ mkdir:
 	@mkdir -p ${BINDIR}
 	@mkdir -p ${DBGDIR}
 
+lib: 
+	@rm -rf about
+
 run:
 	./$(BIN_PATH)
 
