@@ -1,7 +1,10 @@
+/**
+ * @copyright MIT License (C) 2024 Orcali
+ * @version v0.1.1
+ */
 #if !defined(JOUFMT_H)
 #define JOUFMT_H
 
-#include <stdarg.h>
 #include <stddef.h>
 
 #define JOU_LEVEL_ERROR "Error"

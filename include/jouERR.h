@@ -1,3 +1,7 @@
+/**
+ * @copyright MIT License (C) 2024 Orcali
+ * @version v0.1.1
+ */
 #if !defined(JOUERR_H)
 #define JOUERR_H
 

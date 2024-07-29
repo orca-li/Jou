@@ -1,3 +1,7 @@
+/**
+ * @copyright MIT License (C) 2024 Orcali
+ * @version v0.1.1
+ */
 #if !defined(JOUTEMP_H)
 #define JOUTEMP_H
 

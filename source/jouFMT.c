@@ -1,4 +1,8 @@
-#include "jouCONFIG.h"
+/**
+ * @copyright MIT License (C) 2024 Orcali
+ * @version v0.1.1
+ */
+#include <jou.h>
 #include "include/jouTEMP.h"
 
 #include <stdio.h>
@@ -14,7 +18,6 @@ void __PRIVATEjouHexDump(char *buf, size_t len)
 #else
     size_t line = 0;
 #endif
-
     size_t i = 0;
     size_t itemp;
 
@@ -22,53 +25,75 @@ void __PRIVATEjouHexDump(char *buf, size_t len)
     pHEX = pASCII = buf;
 
     while (i < len) {
-        printf(JOU_COLOR_YELLOW);
-        printf("%08x", line);
-        printf(JOU_COLOR_RESET);
-        printf(":  ");
+#if JCONFIG_COLORS == 1
+        jou.print(JOU_COLOR_YELLOW);
+        jou.print("%08x", line);
+        jou.print(JOU_COLOR_RESET);
+
+#else
+        jou.print("%08x", line);
+#endif
+        jou.print(":  ");
 
         itemp = i;
-        printf(JOU_COLOR_RESET);
         for (size_t j = 0; j < JCONFIG_HEXDUMP_BYTES_IN_LINE / 2; j++) {
             for (size_t k = 0; k < JCONFIG_HEXDUMP_BYTES_PER_SPACE; k++) {
                 if (itemp >= len) {
-                    printf("  ");
+                    jou.print("  ");
                 } else {
-                    if (isjoudump(*pHEX)) {
-                        printf(JOU_COLOR_YELLOW);
+#if JCONFIG_COLORS == 1
+                    if (isjdump(*pHEX)) {
+                        jou.print(JOU_COLOR_YELLOW);
+                    } else if (isjnoascii(*pHEX)) {
+                        jou.print(JOU_COLOR_RED);
                     }
-                    char temp = *pHEX;
-                    printf("%02hhx", temp);
-                    printf(JOU_COLOR_RESET);
+                    jou.print("%02hhx", *pHEX);
+                    jou.print(JOU_COLOR_RESET);
+#else
+                    jou.print("%02hhx", *pHEX);
+#endif
                 }
                 itemp++, pHEX++;
             }
-            putchar(' ');
+            jou.putc(' ');
         }
 
-        putchar(' ');
+        jou.putc(' ');
         itemp = i;
         for (size_t j = 0; j < JCONFIG_HEXDUMP_BYTES_IN_LINE; j++) {
             if (itemp < len) {
-                if (isjoudump(*pASCII)) {
-                    printf(JOU_COLOR_YELLOW);
-                    putchar(*pASCII);
-                    printf(JOU_COLOR_RESET);
+                if (isjdump(*pASCII)) {
+#if JCONFIG_COLORS == 1
+                    jou.print(JOU_COLOR_YELLOW);
+                    jou.putc(*pASCII);
+                    jou.print(JOU_COLOR_RESET);
+#else
+                    jou.putc(*pASCII);
+#endif
                 } else {
-                    putchar('.');
+#if JCONFIG_COLORS == 1
+                if(isjnoascii(*pASCII)) {
+                    jou.print(JOU_COLOR_RED);
+                    jou.putc('.');
+                    jou.print(JOU_COLOR_RESET);
+                } else {
+                    jou.putc('.');
+                }
+#else
+                jou.putc('.');
+#endif
                 }
             }
             itemp++, pASCII++;
         }
         
-
         if (i >= len) return;
-        putchar('\n');
+        jou.putc('\n');
         i = itemp;
-#if JCONFIG_ADDRESS_COLUMN == 1
-        line -= JCONFIG_HEXDUMP_BYTES_IN_LINE;
-#else
+#if JCONFIG_DUMP_DIRECTION_TOP == 1
         line += JCONFIG_HEXDUMP_BYTES_IN_LINE;
+#else
+        line -= JCONFIG_HEXDUMP_BYTES_IN_LINE;
 #endif
     }
 }

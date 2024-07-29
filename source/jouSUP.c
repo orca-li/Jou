@@ -1,12 +1,26 @@
+/**
+ * @copyright MIT License (C) 2024 Orcali
+ * @version v0.1.1
+ */
 #include <stdio.h>
+#include <string.h>
 #include "include/jouTEMP.h"
 
-#if 0
-void strmrg(char *buf, char *add, )
+void strmrg(char *buf, unsigned char number, ...)
 {
+	va_list args;
+	va_start(args, number);
 
+	unsigned char c;
+	char *ptemp;
+	while(c++ < number) {
+		ptemp = va_arg(args, char*);
+		strcpy(buf, ptemp);
+		buf += strlen(ptemp);
+	}
+	va_end(args);
+	*buf = '\0';
 }
-#endif
 
 int sprintj(char *buf, const char *fmt, va_list *args)
 {

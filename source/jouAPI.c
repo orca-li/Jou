@@ -1,3 +1,7 @@
+/**
+ * @copyright MIT License (C) 2024 Orcali
+ * @version v0.1.1
+ */
 #include <jou.h>
 #include "include/jouTEMP.h"
 
@@ -7,16 +11,17 @@
 #include <stddef.h>
 #include <string.h>
 
+static void jouPrint(char *fmt, ...);
+static void jouScan(char *fmt, ...);
+static void jouPut(char c);
+static int jouGetChar(void);
+
 static void jouLevelInfo(char *fmt, ...);
 static void jouLevelDebug(char *fmt, ...);
 static void jouLevelError(char *fmt, ...);
 static void jouLevelWarning(char *fmt, ...);
-static void jouPrint(char *fmt, ...);
-static void jouPut(char c);
+
 static void jouHexDump(char *buf, size_t len);
-static void jouMergeLines(char *buf, char *add, ...);
-static void jouScan(char *fmt, ...);
-static int jouGetChar(void);
 
 jou_jt chj0 = {
     /* stdio */
@@ -33,7 +38,6 @@ jou_jt chj0 = {
 
     /* dump */
     .hex = jouHexDump,
-    .merge = jouMergeLines,
 };
 
 /* --- METHODS -------------------------------------------------- */
@@ -52,14 +56,6 @@ static void jouScan(char *fmt, ...)
     va_list args;
     va_start(args, fmt);
     vsscanf(scanj_buf, fmt, args);
-    va_end(args);
-}
-
-static void jouMergeLines(char *buf, char *add, ...)
-{
-    va_list args;
-    va_start(args, add);
-
     va_end(args);
 }
 
@@ -85,15 +81,21 @@ static void jouPrintLevel(char *level, char *color, char *fmt, va_list *args)
 {
     char buffer[256];
 
-    printf(color);
-    printf(level);
-    printf(JOU_COLOR_RESET);
-    printf(": ");
+    char mrgtmp[64];
+#if JCONFIG_COLORS == 1
+    strmrg(mrgtmp, 4, color, level, JOU_COLOR_RESET, ": ");
+    jou.print(mrgtmp);
+
+#else
+    strmrg(mrgtmp, 2, level, ": ");
+    jou.print(mrgtmp)
+    
+#endif
 
     vsprintf(buffer, fmt, *args);
 
-    fputs(buffer, stdout);
-    printf("\r\n");
+    jou.print(buffer);
+    jou.print("\r\n");
 }
 
 
