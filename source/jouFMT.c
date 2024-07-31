@@ -1,6 +1,6 @@
 /**
- * @copyright MIT License (C) 2024 Orcali
- * @version v0.1.1
+ * @copyright MIT License (c) 2024 Orcali
+ * @version 0.2
  */
 #include <jou.h>
 #include "include/jouTEMP.h"
@@ -10,93 +10,172 @@
 #include <ctype.h>
 #include <wchar.h>
 
-#if defined(JCONFIG_COLORS)
-void __PRIVATEjouHexDump(char *buf, size_t len)
+static void __STATICjouPrintLine(size_t *line, uint8_t bytesInLine)
 {
-#if JCONFIG_ADDRESS_COLUMN == 1
+#if jconfigCOLORS == 1
+    jou.print(JOU_COLOR_YELLOW);
+    jou.print("%08x", *line);
+    jou.print(JOU_COLOR_RESET);
+
+#else
+    jou.print("%08x", *line);
+#endif
+    jou.print(":  ");
+
+#if jconfigDUMP_DIRECTION_TOP == 1
+        *line += bytesInLine;
+#else
+        *line -= bytesInLine;
+#endif
+}
+
+static void __STATICdumpBin(uint8_t byte)
+{
+    uint8_t i = 0;
+
+#if jconfigCOLORS == 1
+    if (isjdump(byte)) {
+        jou.print(JOU_COLOR_YELLOW);
+    } else if (isjnoascii(byte)) {
+        jou.print(JOU_COLOR_RED);
+    }
+    
+    while(i++ < 8u) {
+        jou.putc((byte & 128) ? '1' : '0'); 
+        byte <<= 1;
+    }
+
+    jou.print(JOU_COLOR_RESET);
+#else
+    while(i++ < 8u) {
+        jou.putc((byte & 128) ? '1' : '0'); 
+        byte <<= 1;
+    }
+
+#endif
+
+    
+#if jconfigBIN_SEPARATOR == 1
+    jou.putc(' ');
+#endif
+}
+
+inline static void __INLINEdumpHex(uint8_t byte)
+{
+#if jconfigCOLORS == 1
+    if (isjdump(byte)) {
+        jou.print(JOU_COLOR_YELLOW);
+    } else if (isjnoascii(byte)) {
+        jou.print(JOU_COLOR_RED);
+    }
+    jou.print("%02hhx", byte);
+    jou.print(JOU_COLOR_RESET);
+#else
+    jou.print("%02hhx", byte);
+#endif
+}
+
+inline static void __INLINEdumpASCII(uint8_t byte)
+{
+    if (isjdump(byte)) {
+#if jconfigCOLORS == 1
+        jou.print(JOU_COLOR_YELLOW);
+        jou.putc(byte);
+        jou.print(JOU_COLOR_RESET);
+#else
+        jou.putc(byte);
+#endif
+        } else {
+#if jconfigCOLORS == 1
+        if(isjnoascii(byte)) {
+            jou.print(JOU_COLOR_RED);
+            jou.putc('.');
+            jou.print(JOU_COLOR_RESET);
+        } else {
+            jou.putc('.');
+        }
+#else
+        jou.putc('.');
+#endif
+    }
+}
+
+
+void __PRIVATEjouDump(const char type, const char *buf, const size_t len)
+{
+    size_t bytesInLine = 1; /* 1 is protection against segmentation fault */
+    size_t printed = 0;
+#if jconfigADDRESS_COLUMN == 1
     size_t line = (size_t)buf;
 #else
     size_t line = 0;
 #endif
-    size_t i = 0;
-    size_t itemp;
 
-    char *pHEX, *pASCII;
-    pHEX = pASCII = buf;
+    switch (type)
+    {
+    case jfmtDUMP_BIN:
+        bytesInLine = jconfigBIN_BYTES_IN_LINE;
+        break;
+    
+    case jfmtDUMP_HEX:
+        bytesInLine = jconfigHEX_BYTES_IN_LINE;
+        break;
+    }
 
-    while (i < len) {
-#if JCONFIG_COLORS == 1
-        jou.print(JOU_COLOR_YELLOW);
-        jou.print("%08x", line);
-        jou.print(JOU_COLOR_RESET);
+    size_t savePrinted;
+    const char *saveBuf = buf;
+    while (printed < len) {
+        __STATICjouPrintLine(&line, bytesInLine);
 
-#else
-        jou.print("%08x", line);
-#endif
-        jou.print(":  ");
-
-        itemp = i;
-        for (size_t j = 0; j < JCONFIG_HEXDUMP_BYTES_IN_LINE / 2; j++) {
-            for (size_t k = 0; k < JCONFIG_HEXDUMP_BYTES_PER_SPACE; k++) {
-                if (itemp >= len) {
-                    jou.print("  ");
-                } else {
-#if JCONFIG_COLORS == 1
-                    if (isjdump(*pHEX)) {
-                        jou.print(JOU_COLOR_YELLOW);
-                    } else if (isjnoascii(*pHEX)) {
-                        jou.print(JOU_COLOR_RED);
-                    }
-                    jou.print("%02hhx", *pHEX);
-                    jou.print(JOU_COLOR_RESET);
-#else
-                    jou.print("%02hhx", *pHEX);
-#endif
+        savePrinted = printed;
+        saveBuf = buf;
+        uint8_t spaceSeparator = 1; /* 1 byte is index offset */
+        for (size_t i = 0; i < bytesInLine; i++) {
+            if (printed < len) {
+                switch (type)
+                {
+                case jfmtDUMP_BIN:
+                    __STATICdumpBin(*buf++);
+                    break;
+                
+                case jfmtDUMP_HEX:
+                    __INLINEdumpHex(*buf++);
+                    break;
                 }
-                itemp++, pHEX++;
+            } else {
+                switch (type)
+                {
+                case jfmtDUMP_BIN:
+                    jou.print("        ");
+#if jconfigBIN_SEPARATOR == 1
+                    jou.putc(' ');
+#endif
+                    break;
+                
+                case jfmtDUMP_HEX:
+                    jou.print("  ");
+                    break;
+                }
+                
             }
-            jou.putc(' ');
+            
+            if (spaceSeparator >= jconfigDUMP_BYTES_PER_SPACE) {    
+                spaceSeparator = 0;
+                jou.putc(' ');
+            }
+            spaceSeparator++;
+            printed++;
         }
+        printed = savePrinted;
+        buf = saveBuf;
 
         jou.putc(' ');
-        itemp = i;
-        for (size_t j = 0; j < JCONFIG_HEXDUMP_BYTES_IN_LINE; j++) {
-            if (itemp < len) {
-                if (isjdump(*pASCII)) {
-#if JCONFIG_COLORS == 1
-                    jou.print(JOU_COLOR_YELLOW);
-                    jou.putc(*pASCII);
-                    jou.print(JOU_COLOR_RESET);
-#else
-                    jou.putc(*pASCII);
-#endif
-                } else {
-#if JCONFIG_COLORS == 1
-                if(isjnoascii(*pASCII)) {
-                    jou.print(JOU_COLOR_RED);
-                    jou.putc('.');
-                    jou.print(JOU_COLOR_RESET);
-                } else {
-                    jou.putc('.');
-                }
-#else
-                jou.putc('.');
-#endif
-                }
+        for (size_t i = 0; i < bytesInLine; i++) {
+            if (printed < len) {
+                __INLINEdumpASCII(*buf++);
             }
-            itemp++, pASCII++;
+            printed++;
         }
-        
-        if (i >= len) return;
-        jou.putc('\n');
-        i = itemp;
-#if JCONFIG_DUMP_DIRECTION_TOP == 1
-        line += JCONFIG_HEXDUMP_BYTES_IN_LINE;
-#else
-        line -= JCONFIG_HEXDUMP_BYTES_IN_LINE;
-#endif
+        jou.print("\r\n");
     }
 }
-#else
-
-#endif

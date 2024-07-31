@@ -1,6 +1,6 @@
 /**
  * @copyright MIT License (C) 2024 Orcali
- * @version v0.1.1
+ * @version 0.2
  */
 #include <jou.h>
 #include "include/jouTEMP.h"
@@ -22,6 +22,10 @@ static void jouLevelError(char *fmt, ...);
 static void jouLevelWarning(char *fmt, ...);
 
 static void jouHexDump(char *buf, size_t len);
+static void jouBinDump(char *buf, size_t len);
+
+static void jouLevelHook(char *fmt, ...);
+static void jouTagPrint(char *tag, char *fmt, ...);
 
 jou_jt chj0 = {
     /* stdio */
@@ -36,8 +40,13 @@ jou_jt chj0 = {
     .inf = jouLevelInfo,
     .wrn = jouLevelWarning,
 
+    /* addons */
+    .hook = jouLevelHook,
+    .tag = jouTagPrint,
+
     /* dump */
     .hex = jouHexDump,
+    .bin = jouBinDump,
 };
 
 /* --- METHODS -------------------------------------------------- */
@@ -49,7 +58,7 @@ static int jouGetChar(void)
 
 static void jouScan(char *fmt, ...)
 {
-    char scanj_buf[JCONFIG_SCANJ_BUF_SIZE];
+    char scanj_buf[jconfigSCANJ_BUF_SIZE];
     
     JCONFIG_TUNNEL_SCAN(scanj_buf);
     
@@ -57,11 +66,6 @@ static void jouScan(char *fmt, ...)
     va_start(args, fmt);
     vsscanf(scanj_buf, fmt, args);
     va_end(args);
-}
-
-static void jouHexDump(char *buf, size_t len)
-{
-    __PRIVATEjouHexDump(buf, len);
 }
 
 static void jouPut(char c)
@@ -79,9 +83,9 @@ static void jouPrint(char *fmt, ...)
 
 static void jouPrintLevel(char *level, char *color, char *fmt, va_list *args)
 {
-    char buffer[256];
+    char buffer[jconfigPRINTJ_BUF_SIZE];
 
-    char mrgtmp[64];
+    char mrgtmp[jconfigMRGTMP_BUF_SIZE];
 #if JCONFIG_COLORS == 1
     strmrg(mrgtmp, 4, color, level, JOU_COLOR_RESET, ": ");
     jou.print(mrgtmp);
@@ -98,6 +102,15 @@ static void jouPrintLevel(char *level, char *color, char *fmt, va_list *args)
     jou.print("\r\n");
 }
 
+static void jouBinDump(char *buf, size_t len)
+{
+    __PRIVATEjouDump(jfmtDUMP_BIN, buf, len);
+}
+
+static void jouHexDump(char *buf, size_t len)
+{
+    __PRIVATEjouDump(jfmtDUMP_HEX, buf, len);
+}
 
 /* --- TEMPLATES -------------------------------------------------- */
 static void jouLevelWarning(char *fmt, ...)
@@ -134,5 +147,37 @@ static void jouLevelError(char *fmt, ...)
 
     va_start(args, fmt);
     jouPrintLevel(JOU_LEVEL_ERROR, JOU_COLOR_RED, fmt, &args);
+    va_end(args);
+}
+
+static void jouLevelHook(char *fmt, ...)
+{
+    char buffer[jconfigPRINTJ_BUF_SIZE];
+
+    char mrgtmp[jconfigMRGTMP_BUF_SIZE];
+    strmrg(mrgtmp, 2, JOU_LEVEL_HOOK, ": ");
+    jou.print(mrgtmp);
+
+    va_list args;
+    va_start(args, fmt);
+    vsprintf(buffer, fmt, args);
+    va_end(args);
+
+    for (uint8_t i = 0; i < jconfigHOOK_LENGTH; i++ ) {
+        jou.putc(' ');
+    }
+    jou.print(buffer);
+    jou.print("\r\n");
+}
+
+static void jouTagPrint(char *tag, char *fmt, ...)
+{
+    va_list args;
+
+    char mrgtmp[jconfigMRGTMP_BUF_SIZE];
+    strmrg(mrgtmp, 3, "<", tag, ">");
+
+    va_start(args, fmt);
+    jouPrintLevel(mrgtmp, JOU_COLOR_YELLOW, fmt, &args);
     va_end(args);
 }

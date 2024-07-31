@@ -29,7 +29,7 @@ CSIZE := $(PREFIXCC)size
 include about/quickStart.mk
 include source/jou.mk
 
-INCLUDES := -I"../jou"
+INCLUDES += -I"../jou"
 
 SOURCES += ${wildcard *.c}
 

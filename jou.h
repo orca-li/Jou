@@ -1,6 +1,6 @@
 /**
  * @copyright MIT License (C) 2024 Orcali
- * @version v0.1.1
+ * @version 0.2
  */
 #if !defined(JOU_H)
 #define JOU_H
@@ -22,11 +22,15 @@ typedef void (*vfc_jt)(char);
 typedef void (*vfsa_jt)(char*, ...);
 typedef void (*vfsl_jt)(char*, size_t);
 typedef int (*ifv_jt)(void);
+typedef void (*vfssa_jt)(char*, char*, ...);
+typedef void (*vfssl_jt)(char*, char*, size_t);
 
 typedef ifv_jt getc_jt;
 typedef vfc_jt putc_jt;
 typedef vfsa_jt printf_jt;
 typedef vfsl_jt dump_jt;
+typedef vfssa_jt tag_jt;
+typedef vfssl_jt cmp_jt;
 
 typedef struct JOU_JT {
     struct { 
@@ -45,6 +49,15 @@ typedef struct JOU_JT {
         /* dumps */
         const dump_jt hex;
         const dump_jt bin;
+
+        /* addons */
+        const printf_jt hook;
+        const tag_jt tag;
+        const cmp_jt cmp;
+
+        /* journal */
+        // init
+        // save
     };
 } jou_jt;
 

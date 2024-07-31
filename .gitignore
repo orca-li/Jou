@@ -1,6 +1,7 @@
 *.elf
 *.exe
 *.bin
+*.hex
 *.d
 *.o
 .build

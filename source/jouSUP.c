@@ -1,6 +1,6 @@
 /**
  * @copyright MIT License (C) 2024 Orcali
- * @version v0.1.1
+ * @version v0.2
  */
 #include <stdio.h>
 #include <string.h>
@@ -29,7 +29,7 @@ int sprintj(char *buf, const char *fmt, va_list *args)
 
 int printj(const char *fmt, va_list *args)
 {
-	char printf_buf[JCONFIG_PRINTJ_BUF_SIZE];
+	char printf_buf[jconfigPRINTJ_BUF_SIZE];
 	int printed;
 
 	printed = vsprintf(printf_buf, fmt, *args);

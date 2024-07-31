@@ -4,8 +4,6 @@ jou.hook <br>
 jou.tag <br>
 
 jou.bin <br>
-jou.dec <br>
-jou.oct <br>
 
 ## channels and interfaces
 ```c
@@ -22,14 +20,15 @@ chj1.ifc = usart;
 
 ## compare
 
-jou.comp
+jou.cmp
 ```
-addr arr1 arr2 arr1   arr2   arr1 arr2
-     hex  hex  ascii  ascii  dec  dec
+addr arr1       arr2
+     hex ascii  hex ascii 
 ```
 
 ## dump register
 
+Сделать структуру, потом в цикле выводить информацию о структуре
 address, register name, full name <br>
 register value <br>
 flag - description <br>
@@ -37,10 +36,10 @@ flag - description <br>
 
 ## journal
 ```c
-jou.j.init; // указать вершину журнала
-jou.j.save; // записать в журнал
-jou.j.load; // выгрузить журнал в массив
-jou.j.read; // прочитать журнал
+jou.init; // указать вершину журнала
+jou.save; // записать в журнал
+jou.load; // выгрузить журнал в массив
+jou.read; // прочитать журнал
 ```
 
 <h1>Completed </h1>

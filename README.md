@@ -1,4 +1,4 @@
-<b>v0.1.1</b> - small changes
+<b>v0.2</b> - small changes
 ```
  __
 /\_\    ___   __  __  
