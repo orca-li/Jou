@@ -1,4 +1,4 @@
-<b>v0.2</b> - small changes
+<b>v0.2.1</b> - Current Version
 ```
  __
 /\_\    ___   __  __  
@@ -9,7 +9,8 @@
 \ \____/              
  \/___/               
 ```
-<h1>Description</h1>
+<hr>
+<b>Description</b> <br>
 <u>jou</u> is an open source library for logging program execution. It has different tools for logging. It has instruments of different groups: <br>
 - Level log output <br>
 - Dumps in various number systems <br>
@@ -20,4 +21,3 @@
 - Logging function calls <br>
 - Easy to learn <br>
 - Easy to install <br>
-<hr>

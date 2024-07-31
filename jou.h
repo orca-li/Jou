@@ -1,6 +1,6 @@
 /**
  * @copyright MIT License (C) 2024 Orcali
- * @version 0.2
+ * @version 0.2.1
  */
 #if !defined(JOU_H)
 #define JOU_H
@@ -34,30 +34,32 @@ typedef vfssl_jt cmp_jt;
 
 typedef struct JOU_JT {
     struct { 
-        /* stdio */
         const printf_jt print;
         const printf_jt scan;
         const putc_jt putc;
         const getc_jt getc;
 
-        /* logs */
         const printf_jt err;
         const printf_jt wrn;
         const printf_jt dbg;
         const printf_jt inf;
         
-        /* dumps */
+#if jconfigAPI_DUMP_HEX == 1
         const dump_jt hex;
+#endif
+#if jconfigAPI_DUMP_BIN == 1
         const dump_jt bin;
+#endif
 
-        /* addons */
+#if jconfigAPI_ADDONS_HOOK == 1
         const printf_jt hook;
+#endif
+#if jconfigAPI_ADDONS_TAG == 1
         const tag_jt tag;
+#endif
+#if jconfigAPI_ADDONS_CMP == 1
         const cmp_jt cmp;
-
-        /* journal */
-        // init
-        // save
+#endif
     };
 } jou_jt;
 

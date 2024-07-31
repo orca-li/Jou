@@ -1,6 +1,6 @@
 /**
  * @copyright MIT License (C) 2024 Orcali
- * @version v0.1.1
+ * @version v0.2.1
  */
 #if !defined(JOUTEMP_H)
 #define JOUTEMP_H
@@ -34,5 +34,19 @@
 /* >= 100 && < 1000 stm32 liteMCU */
 
 #endif 
+
+#if jconfigLITE_VERSION == 1
+#define jouINOUT_PRINT(...) JOU_PRINT(__VA_ARGS__)
+#define jouINOUT_SCAN(...) JOU_SCAN(__VA_ARGS__)
+#define jouINOUT_PUTC(...) JOU_PUTC(__VA_ARGS__)
+#define jouINOUT_GETC(...) JOU_GETC(__VA_ARGS__)
+
+#else
+#define jouINOUT_PRINT(...) jou.print(__VA_ARGS__)
+#define jouINOUT_SCAN(...) jou.scan(__VA_ARGS__)
+#define jouINOUT_PUTC(...) jou.putc(__VA_ARGS__)
+#define jouINOUT_GETC(...) jou.getc(__VA_ARGS__)
+
+#endif
 
 #endif /* JOUTEMP_H */

@@ -1,6 +1,6 @@
 /**
  * @copyright MIT License (c) 2024 Orcali
- * @version 0.2
+ * @version 0.2.1
  */
 #include <jou.h>
 #include "include/jouSUP.h"

@@ -1,6 +1,6 @@
 /**
  * @copyright MIT License (c) 2024 Orcali
- * @version 0.2
+ * @version 0.2.1
  */
 #if !defined(JOUCONFIG_H)
 #define JOUCONFIG_H
@@ -13,10 +13,18 @@
 
 #else
 /* JOULIB DEVELOPER CODE BEGIN ---------------------- */
+/* API Configuration */
+#define jconfigAPI_ADDONS_TAG       SET_FLAG(1)
+#define jconfigAPI_ADDONS_HOOK      SET_FLAG(1)
+#define jconfigAPI_ADDONS_CMP       SET_FLAG(1)
+#define jconfigAPI_DUMP_HEX         SET_FLAG(1)
+#define jconfigAPI_DUMP_BIN         SET_FLAG(1)
+
 /* Using templates Configuration */
 #define JCONFIG_TEMP_TARGET         SET_VALUE(1) /* view the MANUAL */
 
 /* Preprocessor directive Configuration */
+#define jconfigLITE_VERSION         SET_FLAG(0)
 #define JCONFIG_SYNONYM_chj0        SET_FLAG(1)
 
 /* Colors Configuration */
@@ -63,7 +71,7 @@
 #define jCASE_TYPEDUMP_BIN 'B'
 #define jCASE_TYPEDUMP_ASCII 'A'
 
-/* Backward Compatibility */
+/* OLD Backward Compatibility */
 #define JCONFIG_COLORS jconfigCOLORS
 #define JCONFIG_ADDRESS_COLUMN jconfigADDRESS_COLUMN
 #define JCONFIG_HEXDUMP_BYTES_IN_LINE jconfigHEX_BYTES_IN_LINE
