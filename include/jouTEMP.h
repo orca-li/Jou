@@ -1,6 +1,6 @@
 /**
- * @copyright MIT License (C) 2024 Orcali
- * @version v0.2.1
+ * @copyright MIT License, 2024 (c) Orcali
+ * @version 0.2.2
  */
 #if !defined(JOUTEMP_H)
 #define JOUTEMP_H
@@ -9,43 +9,45 @@
 #include "jouFMT.h"
 #include "jouSUP.h"
 
-#if JCONFIG_TEMP_TARGET == 0ul
+#if jconfigTEMP_TARGET == 0x0000
+/* templates: off */
 
-/* >= 0 && < 10 stdio */
-#elif JCONFIG_TEMP_TARGET == 1ul
-#define JCONFIG_TUNNEL_PRINT(_buffer) fputs(_buffer, stdout)
-#define JCONFIG_TUNNEL_PUTC(_char) fputc(_char, stdout)
-#define JCONFIG_TUNNEL_SCAN(_buffer) fgets(_buffer, JCONFIG_SCANJ_BUF_SIZE, stdin)
-#define JCONFIG_TUNNEL_GETC(_char) fgetc(stdin)
+/* 0x0000 - 0x000F | stdio */
+#elif jconfigTEMP_TARGET == 0x0001
+#define jconfigVIFC_PRINT(_buffer) fputs(_buffer, stdout)
+#define jconfigVIFC_PUTC(_char) fputc(_char, stdout)
+#define jconfigVIFC_SCAN(_buffer) fgets(_buffer, jconfigSCANJ_BUF_SIZE, stdin)
+#define jconfigVIFC_GETC(_char) fgetc(stdin)
 
-/* >= 10 && < 100 stm32 hal */
-#elif JCONFIG_TEMP_TARGET == 10ul 
-#define JCONFIG_TUNNEL_PRINT(_buffer) HAL_UART_Transmit(&huart1, (uint8_t *)_buffer, strlen(_buffer), 5)
-#define JCONFIG_TUNNEL_PUTC(_char) HAL_UART_Transmit(&huart1, (uint8_t *)_buffer, 1, 2)
-#define JCONFIG_TUNNEL_SCAN
-#define JCONFIG_TUNNEL_GETC
+/* 0x0100 - 0x01FF | stm32 hal */
+#elif jconfigTEMP_TARGET == 0x0100
+#define jconfigVIFC_PRINT(_buffer) HAL_UART_Transmit(&huart1, (uint8_t *)_buffer, strlen(_buffer), 5)
+#define jconfigVIFC_PUTC(_char) HAL_UART_Transmit(&huart1, (uint8_t *)_buffer, 1, 2)
+#define jconfigVIFC_SCAN
+#define jconfigVIFC_GETC
 
-#elif JCONFIG_TEMP_TARGET == 20ul
-#define JCONFIG_TUNNEL_PRINT(_buffer) HAL_UART_Transmit(&huart2, (uint8_t *)_buffer, strlen(_buffer), 5)
-#define JCONFIG_TUNNEL_PUTC(_char) HAL_UART_Transmit(&huart2, (uint8_t *)_buffer, 1, 2)
-#define JCONFIG_TUNNEL_SCAN
-#define JCONFIG_TUNNEL_GETC
+#elif jconfigTEMP_TARGET == 0x0101
+#define jconfigVIFC_PRINT(_buffer) HAL_UART_Transmit(&huart2, (uint8_t *)_buffer, strlen(_buffer), 5)
+#define jconfigVIFC_PUTC(_char) HAL_UART_Transmit(&huart2, (uint8_t *)_buffer, 1, 2)
+#define jconfigVIFC_SCAN
+#define jconfigVIFC_GETC
 
-/* >= 100 && < 1000 stm32 liteMCU */
+/* 0x0200 - 0x02FF | stm32 liteMCU */
+
 
 #endif 
 
 #if jconfigLITE_VERSION == 1
-#define jouINOUT_PRINT(...) JOU_PRINT(__VA_ARGS__)
-#define jouINOUT_SCAN(...) JOU_SCAN(__VA_ARGS__)
-#define jouINOUT_PUTC(...) JOU_PUTC(__VA_ARGS__)
-#define jouINOUT_GETC(...) JOU_GETC(__VA_ARGS__)
+#define jouINOUT_PRINT(...) JOUP(__VA_ARGS__)
+#define jouINOUT_SCAN(...) JOUS(__VA_ARGS__)
+#define jouINOUT_PUTC(...) JOUC(__VA_ARGS__)
+#define jouINOUT_GETC(...) JOUG(__VA_ARGS__)
 
 #else
-#define jouINOUT_PRINT(...) jou.print(__VA_ARGS__)
-#define jouINOUT_SCAN(...) jou.scan(__VA_ARGS__)
-#define jouINOUT_PUTC(...) jou.putc(__VA_ARGS__)
-#define jouINOUT_GETC(...) jou.getc(__VA_ARGS__)
+#define jouINOUT_PRINT(...) chj0.print(__VA_ARGS__)
+#define jouINOUT_SCAN(...) chj0.scan(__VA_ARGS__)
+#define jouINOUT_PUTC(...) chj0.putc(__VA_ARGS__)
+#define jouINOUT_GETC(...) chj0.getc(__VA_ARGS__)
 
 #endif
 

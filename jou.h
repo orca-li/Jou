@@ -1,12 +1,13 @@
 /**
- * @copyright MIT License (C) 2024 Orcali
- * @version 0.2.1
+ * @copyright MIT License, 2024 (c) Orcali
+ * @version 0.2.2
  */
 #if !defined(JOU_H)
 #define JOU_H
 
 #include <stddef.h>
 #include "include/jouERR.h"
+#include "include/jouVERSION.h"
 
 /** @typedef for functions
  * 

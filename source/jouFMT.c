@@ -1,6 +1,6 @@
 /**
- * @copyright MIT License (c) 2024 Orcali
- * @version 0.2.1
+ * @copyright MIT License, 2024 (c) Orcali
+ * @version 0.2.2
  */
 #include <jou.h>
 #include "include/jouTEMP.h"
@@ -194,7 +194,6 @@ void __PRIVATEjouDump(const char type, const char *buf, const size_t len)
         jouINOUT_PRINT("\r\n");
     }
 }
-
 #endif
 
 static void jouPrintLevel(char *level, char *color, char *fmt, va_list *args)
@@ -202,13 +201,13 @@ static void jouPrintLevel(char *level, char *color, char *fmt, va_list *args)
     char buffer[jconfigPRINTJ_BUF_SIZE];
 
     char mrgtmp[jconfigMRGTMP_BUF_SIZE];
-#if JCONFIG_COLORS == 1
+#if jconfigCOLORS == 1
     strmrg(mrgtmp, 4, color, level, JOU_COLOR_RESET, ": ");
     jouINOUT_PRINT(mrgtmp);
 
 #else
     strmrg(mrgtmp, 2, level, ": ");
-    jouINOUT_PRINT(mrgtmp)
+    jouINOUT_PRINT(mrgtmp);
     
 #endif
 
@@ -257,14 +256,14 @@ void jouLevelError(char *fmt, ...)
 
 int jouGetChar(void)
 {
-    return JCONFIG_TUNNEL_GETC();
+    return jconfigVIFC_GETC();
 }
 
 void jouScan(char *fmt, ...)
 {
     char scanj_buf[jconfigSCANJ_BUF_SIZE];
     
-    JCONFIG_TUNNEL_SCAN(scanj_buf);
+    jconfigVIFC_SCAN(scanj_buf);
     
     va_list args;
     va_start(args, fmt);
@@ -274,7 +273,7 @@ void jouScan(char *fmt, ...)
 
 void jouPut(char c)
 {
-    JCONFIG_TUNNEL_PUTC(c);
+    jconfigVIFC_PUTC(c);
 }
 
 void jouPrint(char *fmt, ...)

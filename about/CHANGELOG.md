@@ -1,4 +1,4 @@
-<b>v0.2.1</b> - Current Version
+<b>v0.2.2</b> - Current Version
 ```
  __
 /\_\    ___   __  __  
@@ -10,6 +10,10 @@
  \/___/               
 ```
 <hr>
+
+<b> 02.08.24 - v0.2.2 </b>
+
+    - lite version
 
 <b> 01.08.24 - v0.2.1 </b>
 

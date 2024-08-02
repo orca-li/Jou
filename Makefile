@@ -26,7 +26,7 @@ CSIZE := $(PREFIXCC)size
 # --- TOOLCHAIN VARIABLES CODE END --------------------------
 
 # --- PATHS AND SYMBOLS CODE BEGIN --------------------------
-include about/quickStart.mk
+include once/quickStart.mk
 include source/jou.mk
 
 INCLUDES += -I"../jou"

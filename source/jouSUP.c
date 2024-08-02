@@ -34,7 +34,7 @@ int printj(const char *fmt, va_list *args)
 
 	printed = vsprintf(printf_buf, fmt, *args);
 
-    JCONFIG_TUNNEL_PRINT(printf_buf);
+    jconfigVIFC_PRINT(printf_buf);
 
 	return printed;
 }

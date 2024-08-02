@@ -1,6 +1,6 @@
 /**
- * @copyright MIT License (c) 2024 Orcali
- * @version 0.2.1
+ * @copyright MIT License, 2024 (c) Orcali
+ * @version 0.2.2
  */
 #if !defined(JOUCONFIG_H)
 #define JOUCONFIG_H
@@ -13,6 +13,9 @@
 
 #else
 /* JOULIB DEVELOPER CODE BEGIN ---------------------- */
+/* Lite Version Configuration */
+#define jconfigLITE_VERSION         SET_FLAG(1)
+
 /* API Configuration */
 #define jconfigAPI_ADDONS_TAG       SET_FLAG(1)
 #define jconfigAPI_ADDONS_HOOK      SET_FLAG(1)
@@ -21,11 +24,10 @@
 #define jconfigAPI_DUMP_BIN         SET_FLAG(1)
 
 /* Using templates Configuration */
-#define JCONFIG_TEMP_TARGET         SET_VALUE(1) /* view the MANUAL */
+#define jconfigTEMP_TARGET         SET_VALUE_HEX(0x0001) /* view the MANUAL */
 
 /* Preprocessor directive Configuration */
-#define jconfigLITE_VERSION         SET_FLAG(0)
-#define JCONFIG_SYNONYM_chj0        SET_FLAG(1)
+#define jconfigSYNONYM_chj0        SET_FLAG(1)
 
 /* Colors Configuration */
 #define jconfigCOLORS               SET_FLAG(1)
@@ -52,6 +54,7 @@
 #define CLIP(_clip) _clip
 #define SET_FLAG(_flag) _flag
 #define SET_VALUE(_value) _value
+#define SET_VALUE_HEX(_hex_value) _hex_value
 
 #if !defined(jconfigPROCESSOR_CAPACITY)
 #define jconfigPROCESSOR_CAPACITY SET_VALUE(16)
@@ -63,23 +66,12 @@
 #define jconfigDUMP_DIRECTION_TOP SET_FLAG(0)
 #endif
 
-#if JCONFIG_SYNONYM_chj0 == 1
+#if jconfigSYNONYM_chj0 == 1
 #define jou chj0
 #endif
 
 #define jCASE_TYPEDUMP_HEX 'H'
 #define jCASE_TYPEDUMP_BIN 'B'
 #define jCASE_TYPEDUMP_ASCII 'A'
-
-/* OLD Backward Compatibility */
-#define JCONFIG_COLORS jconfigCOLORS
-#define JCONFIG_ADDRESS_COLUMN jconfigADDRESS_COLUMN
-#define JCONFIG_HEXDUMP_BYTES_IN_LINE jconfigHEX_BYTES_IN_LINE
-#define JCONFIG_HEXDUMP_BYTES_PER_SPACE jconfigDUMP_BYTES_PER_SPACE
-#define JCONFIG_DUMP_DIRECTION_TOP jconfigDUMP_DIRECTION_TOP
-#define JCONFIG_GENERAL_SIZE
-#define JCONFIG_PRINTJ_BUF_SIZE
-#define JCONFIG_SCANJ_BUF_SIZE jconfigSCANJ_BUF_SIZE
-#define JCONFIG_MRGTMP_BUF_SIZE
 
 #endif /* JOUCONFIG_H */

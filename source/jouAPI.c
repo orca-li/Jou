@@ -1,10 +1,11 @@
 /**
- * @copyright MIT License (C) 2024 Orcali
- * @version 0.2.1
+ * @copyright MIT License, 2024 (c) Orcali
+ * @version 0.2.2
  */
 #include <jou.h>
 #include "include/jouTEMP.h"
 
+#if jconfigLITE_VERSION == 0
 #include <stdio.h>
 #include <stdint.h>
 #include <stdarg.h>
@@ -60,3 +61,4 @@ jou_jt chj0 = {
     .bin = jouBinDump,
 #endif
 };
+#endif
