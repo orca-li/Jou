@@ -1,6 +1,6 @@
 /**
  * @copyright MIT License, 2024 (c) Orcali
- * @version 0.2.2
+ * @version 0.3
  */
 #include <jou.h>
 #include "include/jouTEMP.h"
@@ -53,7 +53,7 @@ void jouHexDump(char *buf, size_t len)
     __PRIVATEjouDump(jfmtDUMP_HEX, buf, len);
 }
 
-inline static void __INLINEdumpHex(uint8_t byte)
+inline static void __INLINEdumpHex(const uint8_t byte)
 {
 #if jconfigCOLORS == 1
     if (isjdump(byte)) {
@@ -69,8 +69,7 @@ inline static void __INLINEdumpHex(uint8_t byte)
 }
 #endif
 
-#if jconfigAPI_DUMP_HEX == 1 || jconfigAPI_DUMP_BIN == 1
-static void __STATICjouPrintLine(size_t *line, uint8_t bytesInLine)
+static void __STATICjouPrintLine(size_t *line, const uint8_t bytesInLine)
 {
 #if jconfigCOLORS == 1
     jouINOUT_PRINT(JOU_COLOR_YELLOW);
@@ -89,6 +88,7 @@ static void __STATICjouPrintLine(size_t *line, uint8_t bytesInLine)
 #endif
 }
 
+#if (jconfigAPI_DUMP_HEX == 1 || jconfigAPI_DUMP_BIN == 1)
 inline static void __INLINEdumpASCII(uint8_t byte)
 {
     if (isjdump(byte)) {
@@ -148,9 +148,11 @@ void __PRIVATEjouDump(const char type, const char *buf, const size_t len)
             if (printed < len) {
                 switch (type)
                 {
+#if jconfigAPI_DUMP_BIN == 1
                 case jfmtDUMP_BIN:
                     __STATICdumpBin(*buf++);
                     break;
+#endif
 #if jconfigAPI_DUMP_HEX == 1                
                 case jfmtDUMP_HEX:
                     __INLINEdumpHex(*buf++);
@@ -317,5 +319,117 @@ void jouTagPrint(char *tag, char *fmt, ...)
     va_start(args, fmt);
     jouPrintLevel(mrgtmp, JOU_COLOR_YELLOW, fmt, &args);
     va_end(args);
+}
+#endif
+
+#if jconfigAPI_ADDONS_CMP == 1
+inline static void __INLINEcmpHEX(const uint8_t b1, const uint8_t b2)
+{
+#if jconfigCOLORS == 1
+    if (b1 == b2) {
+        jouINOUT_PRINT(JOU_COLOR_YELLOW);
+        jouINOUT_PRINT("%02hhx", b1);
+        jouINOUT_PRINT(JOU_COLOR_RESET);
+    } else {
+        jouINOUT_PRINT("%02hhx", b1);
+    }
+#else
+    jouINOUT_PRINT("%02hhx", b1);
+#endif
+}
+
+inline static void __INLINEcmpASCII(const uint8_t b1, const uint8_t b2)
+{
+#if jconfigCOLORS == 1
+    if (b1 == b2) {
+        jouINOUT_PRINT(JOU_COLOR_YELLOW);
+    }
+#endif
+    if (isjdump(b1)) {
+        jouINOUT_PUTC(b1);
+    } else {
+        jouINOUT_PUTC('.');
+    }
+#if jconfigCOLORS == 1
+    jouINOUT_PRINT(JOU_COLOR_RESET);
+#endif
+}
+
+void jouDumpCompare(const char *s1, const char *s2, size_t len)
+{
+    const size_t bytesInLine = jconfigCMP_BYTES_IN_LINE;
+    size_t printed = 0;
+#if jconfigADDRESS_COLUMN == 1
+    size_t line = (size_t)buf;
+#else
+    size_t line = 0;
+#endif
+
+    const char *bufs[] = {s1, s2};
+    const char *saveBuf[jsizeof(bufs)];
+    const char *saveBufNextRow[jsizeof(bufs)];
+
+    saveBufNextRow[0] = bufs[0];
+    saveBufNextRow[1] = bufs[1];
+
+    size_t savePrintedNextRow = 0;
+    while (len > printed) {
+        
+        __STATICjouPrintLine(&line, bytesInLine);
+        for (uint8_t i = 0; i < jsizeof(bufs) && printed < len; i++) {
+            saveBuf[i] = bufs[i];
+            saveBuf[i ^ 1] = bufs[i ^ 1];
+            size_t savePrinted = printed;
+            uint8_t spaceSeparator = 1; /* 1 byte is index offset */
+
+            for (size_t j = 0; j < bytesInLine; j++) {
+
+                if (printed < len) {
+                    __INLINEcmpHEX(*bufs[i], *bufs[i ^ 1]);
+                    bufs[i] += 1;
+                    bufs[i ^ 1] += 1;
+                } else {
+                    jouINOUT_PRINT("  ");
+                }
+
+                if (spaceSeparator >= jconfigDUMP_BYTES_PER_SPACE) {
+                    spaceSeparator = 0;
+                    jouINOUT_PUTC(' ');
+                }
+                spaceSeparator++;
+                printed++;
+
+                
+            }
+            printed = savePrinted;
+            bufs[i] = saveBuf[i];
+            bufs[i ^ 1] = saveBuf[i ^ 1];
+
+            jouINOUT_PUTC(' ');
+            for (size_t j = 0; j < bytesInLine; j++) {
+                if (printed < len) {
+                    __INLINEcmpASCII(*bufs[i], *bufs[i ^ 1]);
+                    bufs[i] += 1;
+                    bufs[i ^ 1] += 1;
+                } else {
+                    jouINOUT_PUTC(' ');
+                }
+                printed++;
+            }
+            if (i == 0) jouINOUT_PRINT("  :  ");
+
+            savePrintedNextRow = printed;
+            saveBufNextRow[i] = bufs[i];
+            saveBufNextRow[i ^ 1] = bufs[i ^ 1];
+
+            printed = savePrinted;
+            bufs[i] = saveBuf[i];
+            bufs[i ^ 1] = saveBuf[i ^ 1];
+        }
+        printed = savePrintedNextRow;
+        bufs[0] = saveBufNextRow[0];
+        bufs[1] = saveBufNextRow[1];
+        jouINOUT_PRINT("\r\n");
+    }
 }
 #endif

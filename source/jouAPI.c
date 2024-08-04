@@ -1,6 +1,6 @@
 /**
  * @copyright MIT License, 2024 (c) Orcali
- * @version 0.2.2
+ * @version 0.3
  */
 #include <jou.h>
 #include "include/jouTEMP.h"
@@ -35,6 +35,9 @@ void jouLevelHook(char *fmt, ...);
 #if jconfigAPI_ADDONS_TAG == 1
 void jouTagPrint(char *tag, char *fmt, ...);
 #endif 
+#if jconfigAPI_ADDONS_CMP == 1
+void jouDumpCompare(char *s1, char *s2, size_t len);
+#endif
 
 jou_jt chj0 = {
     .print = jouPrint,
@@ -59,6 +62,9 @@ jou_jt chj0 = {
 #endif
 #if jconfigAPI_DUMP_BIN == 1
     .bin = jouBinDump,
+#endif
+#if jconfigAPI_ADDONS_CMP == 1
+    .cmp = jouDumpCompare,
 #endif
 };
 #endif

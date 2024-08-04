@@ -1,4 +1,4 @@
-<b>v0.2.2</b> - Current Version
+<b>v0.3</b> - Current Version
 ```
  __
 /\_\    ___   __  __  
@@ -10,6 +10,11 @@
  \/___/               
 ```
 <hr>
+
+<b> 04.08.24 - v0.3 </b>
+
+    - new type channels
+    - jou.cmp
 
 <b> 02.08.24 - v0.2.2 </b>
 

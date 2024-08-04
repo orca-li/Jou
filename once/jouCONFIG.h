@@ -1,6 +1,6 @@
 /**
  * @copyright MIT License, 2024 (c) Orcali
- * @version 0.2.2
+ * @version 0.3
  */
 #if !defined(JOUCONFIG_H)
 #define JOUCONFIG_H
@@ -14,7 +14,7 @@
 #else
 /* JOULIB DEVELOPER CODE BEGIN ---------------------- */
 /* Lite Version Configuration */
-#define jconfigLITE_VERSION         SET_FLAG(1)
+#define jconfigLITE_VERSION         SET_FLAG(0)
 
 /* API Configuration */
 #define jconfigAPI_ADDONS_TAG       SET_FLAG(1)
@@ -24,10 +24,10 @@
 #define jconfigAPI_DUMP_BIN         SET_FLAG(1)
 
 /* Using templates Configuration */
-#define jconfigTEMP_TARGET         SET_VALUE_HEX(0x0001) /* view the MANUAL */
+#define jconfigTEMP_TARGET          SET_VALUE_HEX(0x0001) /* view the MANUAL */
 
 /* Preprocessor directive Configuration */
-#define jconfigSYNONYM_chj0        SET_FLAG(1)
+#define jconfigSYNONYM_chj0         SET_FLAG(1)
 
 /* Colors Configuration */
 #define jconfigCOLORS               SET_FLAG(1)
@@ -38,12 +38,13 @@
 #define jconfigPROCESSOR_CAPACITY   SET_VALUE(16)
 #define jconfigHEX_BYTES_IN_LINE    SET_VALUE(16)
 #define jconfigBIN_BYTES_IN_LINE    SET_VALUE(8)
+#define jconfigCMP_BYTES_IN_LINE    SET_VALUE(8)
 
 /* Memory management Configuration */
 #define jconfigGENERAL_SIZE         SET_VALUE(512)
 #define jconfigPRINTJ_BUF_SIZE      SET_VALUE(jconfigGENERAL_SIZE)
 #define jconfigSCANJ_BUF_SIZE       SET_VALUE(jconfigGENERAL_SIZE)
-#define jconfigMRGTMP_BUF_SIZE      SET_VALUE(64)
+#define jconfigMRGTMP_BUF_SIZE      SET_VALUE(128)
 
 /* Addons Configuration */
 #define jconfigHOOK_LENGTH          SET_VALUE(24)

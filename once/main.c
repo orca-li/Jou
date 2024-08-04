@@ -1,6 +1,6 @@
 /**
  * @copyright MIT License, 2024 (c) Orcali
- * @version 0.2.2
+ * @version 0.3
  */
 #include <jou.h>
 #include "include/jouSUP.h"
@@ -8,16 +8,18 @@
 int main(void) 
 {
     /* CACHE */
-    char arr[133];
-    strmrg(arr, 4, "hello", " world!", " O", "rcali :)");
+    
+    char arr[128] = "\"What society does to its children, its children will do to society.\" - Marcus Tullius Cicero";
+    char arr2[128] = "\"A man should be handsome in everything: in his face, in his clothes, in his soul, and in his thoughts.\" - Anton Chekhov";
 
 #if jconfigLITE_VERSION == 0
 
-    jou.hex(arr, 39);
+    jou.hex(arr, 51);
     jou.inf("sizeof(jou): %d", sizeof(jou));
     jou.hook("new function");
+    jou.bin(arr2, 51);
     jou.tag("main.c", "hello");
-    jou.bin(arr, 51);
+    jou.cmp(arr, arr2, 128);
 
 #else
     JOUX(arr, 39);

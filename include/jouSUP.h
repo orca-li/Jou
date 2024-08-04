@@ -7,6 +7,7 @@
 
 #include <stdarg.h>
 
+#define jsizeof(arr) (sizeof(arr) / sizeof(*arr))
 #define isjnoascii(c) ((unsigned char)c >= 128)
 #define isjdump(c) (isgraph(c) || c == ' ')
 

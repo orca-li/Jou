@@ -1,6 +1,6 @@
 /**
  * @copyright MIT License, 2024 (c) Orcali
- * @version 0.2.2
+ * @version 0.3
  */
 #if !defined(JOU_H)
 #define JOU_H
@@ -19,6 +19,7 @@
  * (a)rgs, (c)har, (s)tring, (l)ong {unsigned long, size_t}
  * 
  */
+#if jconfigLITE_VERSION == 0
 typedef void (*vfc_jt)(char);
 typedef void (*vfsa_jt)(char*, ...);
 typedef void (*vfsl_jt)(char*, size_t);
@@ -64,6 +65,30 @@ typedef struct JOU_JT {
     };
 } jou_jt;
 
+typedef struct INOUT_JT {
+    struct {
+        const printf_jt print;
+        const printf_jt scan;
+        const putc_jt putc;
+        const getc_jt getc;
+    };
+} inout_jt;
+
+typedef struct BASE_JT {
+    struct {
+        const printf_jt print;
+        const printf_jt scan;
+        const putc_jt putc;
+        const getc_jt getc;
+
+        const printf_jt err;
+        const printf_jt wrn;
+        const printf_jt dbg;
+        const printf_jt inf;
+    };
+} base_jt;
+
 extern jou_jt chj0;
+#endif
 
 #endif /* JOU_H */
